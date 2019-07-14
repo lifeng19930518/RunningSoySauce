@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hjcrm.entity">
+
+
+	<!--根据邮箱，查询用户信息-->
+	<select id="queryUserByEmail" parameterType="java.lang.String" resultType="com.hjcrm.system.entity.User">
+		select u.userid,u.username,u.phone,u.sex,u.roleid,u.deptid,u.ischange
+		from hj_user u where u.email = #{email}
+	</select>
+
+	<!--查询密码是否匹配-->
+	<select id="queryPasswordByUserId" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.User">
+		select u.userid,u.username,u.phone,u.sex,u.roleid,u.deptid
+		from hj_user u where u.userid = #{userid} and u.password = #{password}
+	</select>
+
+	<!--根据当前用户角色，查询当前用户所属菜单信息-->
+	<select id="queryMenusByRoleId" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.Menu">
+		select rm.roleid,rm.menuid,r.rolename,m.menuname,m.menuurl
+		from hj_role_menu rm
+		left join hj_role r on r.roleid = rm.roleid
+		left join hj_menu m on m.menuid = rm.menuid
+		where rm.roleid = #{roleid}
+		 <if test="isparend != null and isparend !=''">
+			 and m.menuparaid is null
+		 </if>
+		<if test="isparend == null">
+			and m.menuparaid =#{mid}
+		</if>
+
+
+	</select>
+
+
+	<!--查询用户列表信息-->
+	<select id="queryUserList" parameterType="java.lang.String" resultType="com.hjcrm.system.entity.User">
+		select u.userid,u.username,u.phone,u.sex,u.roleid,u.deptid,u.ischange
+		from hj_user u
+	</select>
+
+
+	<!--<delete id="deleteUserByIds" parameterType="java.util.List">
+		delete   from hj_user
+		<where>
+			userid in
+			<foreach collection="index" item="#{list}" index="index" open="(" separator="," close=")">
+				#{index}
+			</foreach>
+		</where>
+
+	</delete>-->
+	 
+	
+</mapper> 
